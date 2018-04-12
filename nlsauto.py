@@ -5,9 +5,14 @@ command line builder for nls auto configure
 """
 
 import argparse
-def cmdbuild(cls):
-    CMDBuilder.CATEGORIES[cls.__name__.lower()]=cls
-    return cls
+def cmdbuild(cmdname=None):
+    def build(cls):
+        if cmdname:
+            CMDBuilder.CATEGORIES[cmdname]=cls
+        else:
+            CMDBuilder.CATEGORIES[cls.__name__.lower()]=cls
+        return cls
+    return build
 
 class CMDBuilder(object):
     CATEGORIES = {}
