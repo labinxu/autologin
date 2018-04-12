@@ -55,17 +55,24 @@ class NLSDataUpload():
         urlhome = self._make_url(self.url_nlshome)
         resp = self.requester.post(urlhome, data=playdata)
         if self.debug:
-            with open('/home/laxxu/login.html','w') as f:
+            with open('./login.html','w') as f:
                 f.write(resp.text)
         return True if resp.text.find('Sorry') == -1 else False
 
     def addSP(self, data):
+        referer = 'mals60_term/aspsa/asps101?CSRFTOKEN=%s'% self.csrftoken
+        referer = self._make_url(referer)
+        header  = {'Referer':referer}
+        self.requester.addHeaders(header)
+
         addsp = 'mals60_term/aspsa/asps102?CSRFTOKEN=%s' % self.csrftoken
         url = self._make_url(addsp)
+        header = {'Content-Type': 'application/x-www-form-urlencoded'}
+        self.requester.addHeaders(header)
+#        import pdb;pdb.set_trace()
         if data:
             resp = self.requester.post(url, data=data)
-            import pdb;pdb.set_trace()
-            return resp.text.find('Add SP Basic Info successfully') == 1
+            return resp.text.find('Add SP Basic Info successfully') != -1
         return False
 
     def uploadLTEBSData(self, f):
@@ -89,7 +96,7 @@ class NLSDataUpload():
         self.requester.addHeaders({'Content-Type':m.content_type})
         resp = self.requester.post(url_LTEdata, data=m)
         if self.debug:
-            with open('/home/laxxu/uploadlete.html', 'w') as f:
+            with open('./uploadlete.html', 'w') as f:
                 f.write(resp.text)
         return True if resp.text.find('Upload File successfully') != -1 else False
 
