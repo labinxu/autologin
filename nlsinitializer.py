@@ -48,11 +48,16 @@ class NLSDataUpload():
 
         logger.debug(str(playdata))
         urlhome = self._make_url(server, self.url_nlshome)
-        resp = self.requester.post(urlhome, data=playdata)
-        status =  True if resp.text.find('Sorry') == -1 else False
+        resp = self.requester.postSoup(urlhome, data=playdata)
+
+        status = False if resp.find('font',text='Incorrect user or password.') else True
+        
+        # #status =  True if resp.text.find('Sorry') == -1 else False
+        
         if not status:
-            with open('./loginerror.html','w') as f:
-                f.write(resp.text)
+            logger.error('Login Failed')
+        #     with open('./loginerror.html','w') as f:
+        #         f.write(resp.text)
 
         return status
 
@@ -62,6 +67,9 @@ class NLSDataUpload():
         referer = self._make_url(self.server, referer)
         header  = {'Referer':referer}
         self.requester.addHeaders(header)
+    def _postwithstatus(self, url, data):
+        
+        pass
 
     def addSP(self, data):
         self._addreferer()
@@ -69,13 +77,14 @@ class NLSDataUpload():
         url = self._make_url(self.server, addsp)
         header = {'Content-Type': 'application/x-www-form-urlencoded'}
         self.requester.addHeaders(header)
-#        import pdb;pdb.set_trace()
+        status = False
         if data:
             data['CSRFTOKEN'] = self.csrftoken
-            resp = self.requester.post(url, data=data)
-            return resp.text.find('Add SP Basic Info successfully') != -1
-
-        return False
+            resp = self.requester.postSoup(url, data=data)
+            status = True if resp.find('td',text='Add SP Basic Info successfully') else False
+            if not status:
+                logger.error(resp.text.replace(' ','').replace('\r\n','').replace('\n',''))
+        return status
     
     def addAppID(self, data):
         self._addreferer()

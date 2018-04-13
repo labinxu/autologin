@@ -55,23 +55,8 @@ class NLSUI(object):
 
         payload = {}
         if spdata and os.path.exists(spdata):
-            import pdb; pdb.set_trace()
             with open(spdata) as f:
                 payload = json.load(f)
-            spdata= {                              
-                'save':'save',              
-                'userid':'laxu',            
-                'password':'111',           
-                'privatelevel':'1',         
-                "vaildtime":"2020-12-31",   
-                "activeflag":"1",           
-                "version":"10",             
-                "delineation":"description",
-                "xydisplay":"0",            
-                "ipauthentication":"1",     
-                "coarselocationmark":"1",   
-                "CSRFTOKEN":''
-            }                                   
 
             if not payload:
                 logger.error('The spdata read failed')
