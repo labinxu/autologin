@@ -35,13 +35,17 @@ class NLSUI(object):
     def initspdata(self, spdata):
         return self.nlsinitializer.addSP(spdata)
 
+    @CMDBuilder.Args('appdata',help='appid data file')
+    def initappdata(self, appdata):
+        return self.nlsinitializer.addAppID(appdata)
+
     @CMDBuilder.Args('-u', '--username', default='root', help='username')
     @CMDBuilder.Args('-p', '--password', default='nls72NSN', help='password')
     @CMDBuilder.Args('-s', '--server', default='10.129.113.132', help=' server ip')
     @CMDBuilder.Args('-l', '--ltedata', default='', help='the lte base data file type is csv')
-    @CMDBuilder.Args('-S', '--spdata', default='', help='SP data file')
-    @CMDBuilder.Args('-a', '--appid', default='', help='App ID data file')
-    def init(self, username, password, server, ltedata, spdata, appid):
+    @CMDBuilder.Args('-S', '--spdata', default='', help='SP data file json')
+    @CMDBuilder.Args('-a', '--appdata', default='', help='App ID data file json')
+    def init(self, username, password, server, ltedata, spdata, appdata):
         if self.login(username, password, server):
             logger.info('Login successfully')
         else:
@@ -53,6 +57,8 @@ class NLSUI(object):
             else:
                 logger.error('LTE BS Data Upload Failed!')
 
+        ###########################################
+        spdata
         payload = {}
         if spdata and os.path.exists(spdata):
             with open(spdata) as f:
@@ -65,7 +71,23 @@ class NLSUI(object):
                     logger.info('Add SP Data successfully')
                 else:
                     logger.error('Add SP Data Failed!')
+
+        #######appdata
         payload = {}
+        
+        if appdata and os.path.exists(appdata):
+            with open(appdata) as f:
+                payload = json.load(f)
+
+            if not payload:
+                logger.error('The appdata file read failed!')
+            else:
+                if self.initappdata(payload):
+                    logger.info('Add Appdata successfully!')
+                else:
+                    logger.error('Add Appdata Failed!')
+
+        #################
         
 if __name__=='__main__':
     CMDBuilder.run()

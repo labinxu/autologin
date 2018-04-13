@@ -92,12 +92,16 @@ class NLSDataUpload():
         url = self._make_url(self.server, addappid)
         header = {'Content-Type': 'application/x-www-form-urlencoded'}
         self.requester.addHeaders(header)
+        status = False
         if data:
-            data['CSRFTOKEN'] = self.csrftoke
-            resp = self.requester.post(url, data=data)
-            return resp.text.find('Add SET Application ID successfully') != -1
+            data['CSRFTOKEN'] = self.csrftoken
+            resp = self.requester.postSoup(url, data=data)
+            status = True if resp.find('td', text='Add SET Application ID successfully') else False
+            if not status:
+                logger.error(resp.text.replace(' ','').replace('\r\n','').replace('\n',''))
+                #return resp.text.find('Add SET Application ID successfully') != -1
 
-        return False
+        return status
 
 
     def uploadLTEBSData(self, f):
