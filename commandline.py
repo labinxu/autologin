@@ -28,42 +28,25 @@ class CMDBuilder(object):
         return _decorator
 
     @staticmethod
-    def run():
+    def run(subcommand=False):
         top_parser = argparse.ArgumentParser(prog='top')
         subparsers = top_parser.add_subparsers()
         for category in CMDBuilder.CATEGORIES:
             command_object = CMDBuilder.CATEGORIES[category]()
-
-            category_parser = subparsers.add_parser(category)
-            category_parser.set_defaults(command_object=command_object)
-
-            category_subparsers = category_parser.add_subparsers(dest='action')
+            if subcommand:
+                category_parser = subparsers.add_parser(category)
+                category_parser.set_defaults(command_object=command_object)
+                subparsers = category_parser.add_subparsers(dest='action')
             for (action, action_fn) in methods_of(command_object):
-                parser = category_subparsers.add_parser(action)
+                subparser = subparsers.add_parser(action)
                 action_kwargs = []
                 for args, kwargs in getattr(action_fn, 'args', []):
-                    parser.add_argument(*args, **kwargs)
-                parser.set_defaults(action_fn=action_fn)
+                    subparser.add_argument(*args, **kwargs)
+                subparser.set_defaults(action_fn=action_fn)
             #parser.set_defaults(action_kwargs=action_kwargs)
         match_args = top_parser.parse_args()
         fn = match_args.action_fn
         fn(*fetch_func_args(fn, match_args))
-
-# class Dbcommands(object):
-#     def __init__(self):
-#         pass
-
-#     # @args('version', nargs='*', default='versiondefault',
-#     #       help='version help') 
-#     # def sync(self, version): 
-#     #     print("do Dbcommand.sync(version=%s)." %version)
-#     def _update(self):
-#         pass
-
-#     @CMDBuilder.Args('-u','--username', default='root', help='username')
-#     @CMDBuilder.Args('-p','--password', default='nls72NSN', help='password')
-#     def update(self, username, password):
-#         print "do Dbcommand.update().%s %s" %(username, password)
 
 def methods_of(obj):
     result = []
