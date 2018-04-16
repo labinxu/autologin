@@ -1,6 +1,9 @@
 *.html
 */*#*#
+build/*
+nlsui.spec
 .#*
 *~
 */*.pyc
 *.pyc
+dist/*

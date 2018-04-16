@@ -17,13 +17,21 @@ class NLSDataUpload():
         self.server = ''
         self.url_index = 'mals60_term/go_index.do'
         self.url_nlshome = 'mals60_term/NLSHome.do'
+        self.securetype = "http"
+
+    def set_secure(self,insecure=True):
+        if insecure:
+            self.securetype = 'http'
+        else:
+            self.securetype = 'https'
 
     def _make_url(self, server, page):
-        url = 'http://{server}:8080/{page}'.format(server=server, page=page)
+        url = '{ttype}://{server}:8080/{page}'.format(ttype=self.securetype, server=server, page=page)
         logger.debug(url)
         return url
 
     def login(self, username, password, server):
+        
         loginurl = self._make_url(server, self.url_index)
         s = self.requester.getSoup(loginurl)
 
