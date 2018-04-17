@@ -2,6 +2,11 @@
 
 """
 NLS web site handler
+Verify the data change on redi
+kubectl get pod
+kubectl exec -it vnls-gmlc-59cb8c9674-f9xn7 -c local-redis /bin/sh
+ps -ef | grep redi
+
 """
 
 import os, md5, logging, requests
