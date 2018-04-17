@@ -43,15 +43,18 @@ class NLSUI(object):
     @CMDBuilder.Args('-p', '--password', default='nls72NSN', help='password')
     @CMDBuilder.Args('-i', '--insecure', action="store_true", dest="insecure", help='insecure is http, else https')
     @CMDBuilder.Args('-s', '--server', default='10.129.113.132', help=' server ip')
+    @CMDBuilder.Args('-P', '--port', default='8080', help='server port')
     @CMDBuilder.Args('-l', '--ltedata', default='', help='the lte base data file type is csv')
     @CMDBuilder.Args('-S', '--spdata', default='', help='SP data file json')
     @CMDBuilder.Args('-a', '--appdata', default='', help='App ID data file json')
-    def init(self, username, password, insecure, server, ltedata, spdata, appdata):
+    def init(self, username, password, insecure, server, port, ltedata, spdata, appdata):
         self.nlsinitializer.set_secure(insecure)
+        self.nlsinitializer.set_port(port)
         if self.login(username, password, server):
             logger.info('Login successfully')
         else:
             logger.error('Login failed')
+            return
         #
         if ltedata:
             if self.initltebsdata(ltedata):
@@ -60,7 +63,6 @@ class NLSUI(object):
                 logger.error('LTE BS Data Upload Failed!')
 
         ###########################################
-        spdata
         payload = {}
         if spdata and os.path.exists(spdata):
             with open(spdata) as f:
@@ -76,7 +78,7 @@ class NLSUI(object):
 
         #######appdata
         payload = {}
-        
+
         if appdata and os.path.exists(appdata):
             with open(appdata) as f:
                 payload = json.load(f)
@@ -90,6 +92,6 @@ class NLSUI(object):
                     logger.error('Add Appdata Failed!')
 
         #################
-        
+
 if __name__=='__main__':
     CMDBuilder.run()

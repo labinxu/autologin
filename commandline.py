@@ -1,4 +1,5 @@
-#!/usr/bin/python
+#!/usr/bin/env python
+
 """
 command line builder for nls auto configure
 
@@ -89,10 +90,3 @@ if __name__ == "__main__":
     match_args = top_parser.parse_args()
     fn = match_args.action_fn
     fn(*fetch_func_args(fn, match_args))
-
-    # match_args = top_parser.parse_args('db sync 3'.split())
-    # print 'match_args:',match_args
-    # fn = match_args.action_fn
-    # fn_args = fetch_func_args(fn,match_args)
-    # #do the match func
-    # fn(*fn_args)

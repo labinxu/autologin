@@ -18,6 +18,11 @@ class NLSDataUpload():
         self.url_index = 'mals60_term/go_index.do'
         self.url_nlshome = 'mals60_term/NLSHome.do'
         self.securetype = "http"
+        self.port = '8080'
+
+    def set_port(self, port):
+        assert(port)
+        self.port = port
 
     def set_secure(self,insecure=True):
         if insecure:
@@ -26,17 +31,20 @@ class NLSDataUpload():
             self.securetype = 'https'
 
     def _make_url(self, server, page):
-        url = '{ttype}://{server}:8080/{page}'.format(ttype=self.securetype, server=server, page=page)
+        url = '{ttype}://{server}:{port}/{page}'.format(ttype=self.securetype, server=server, port=self.port, page=page)
         logger.debug(url)
         return url
 
     def login(self, username, password, server):
-        
+
         loginurl = self._make_url(server, self.url_index)
         s = self.requester.getSoup(loginurl)
 
         # CSRFTOKEN
         tokentag = s.find('input', attrs={'name':'CSRFTOKEN'})
+        if not tokentag:
+            logger.error('Login Failed %s' % loginurl)
+            return False
         self.csrftoken = tokentag['value']
         self.username = username
         self.password = password
