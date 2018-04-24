@@ -1,0 +1,10 @@
+{
+	"save": "save",
+	"appid": "test",
+	"password": "test",
+	"truststatus": "1",
+	"activeflag": "1",
+	"vender_name": "nokia",
+	"version": "0.8",
+	"CSRFTOKEN": ""
+}

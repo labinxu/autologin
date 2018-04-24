@@ -31,7 +31,7 @@ class NLSUI(object):
     @CMDBuilder.Args('-s', '--server', default='10.129.113.132', help='server')
     def login(self, username, password, server):
         return self.nlsinitializer.login(username, password, server)
-    
+
     @CMDBuilder.Args('ltedata', help='lte bs ok data file')
     def initltebsdata(self, ltedata):
         return self.nlsinitializer.uploadLTEBSData(ltedata)
@@ -47,11 +47,12 @@ class NLSUI(object):
     @CMDBuilder.Args('-u', '--username', default='root', help='username')
     @CMDBuilder.Args('-p', '--password', default='nls72NSN', help='password')
     @CMDBuilder.Args('-i', '--insecure', action="store_true", dest="insecure", help='insecure is http, else https')
-    @CMDBuilder.Args('-s', '--server', default='10.129.113.132', help=' server ip')
+    @CMDBuilder.Args('-S', '--server', default='10.129.113.132', help=' server ip')
     @CMDBuilder.Args('-P', '--port', default='8080', help='server port')
-    @CMDBuilder.Args('-l', '--ltedata', default='', help='the lte base data file type is csv')
-    @CMDBuilder.Args('-S', '--spdata', default='', help='SP data file json')
-    @CMDBuilder.Args('-a', '--appdata', default='', help='App ID data file json')
+
+    @CMDBuilder.Args('-l', '--ltedata', default='./nlsdata/ltebsdata.csv', help='the lte base data file type is csv')
+    @CMDBuilder.Args('-s', '--spdata', default='./nlsdata/spdata.json', help='SP data file json')
+    @CMDBuilder.Args('-a', '--appdata', default='./nlsdata/appdata.json', help='App ID data file json')
     def init(self, username, password, insecure, server, port, ltedata, spdata, appdata):
         self.nlsinitializer.set_secure(insecure)
         self.nlsinitializer.set_port(port)
