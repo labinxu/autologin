@@ -8,8 +8,12 @@ logger = logging.getLogger(__name__)
 
 
 if platform.system() == 'Windows':
-    from requests_ntlm import HttpNtlmAuth
-    from requests_kerberos import HTTPKerberosAuth, REQUIRED
+    try:
+        from requests_ntlm import HttpNtlmAuth
+        from requests_kerberos import HTTPKerberosAuth, REQUIRED
+    except Exception as e:
+        pass
+
 from bs4 import BeautifulSoup
 
 # disable the ssl warnings
@@ -25,8 +29,8 @@ class UtilityRequests():
         """
         self.domain = domain
         self.session = requests.Session()
-	header = {'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36'}
-	self.session.headers.update(header)
+        header = {'User-Agent' : 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
+        self.session.headers.update(header)
         self.auth = None
         self.status_code = None
 
